@@ -12,7 +12,7 @@ import java.time.Instant;
 @Table(name = "tb_enrollment")
 public class Enrollment {
 
-    @EmbeddedId
+    @EmbeddedId  //Annotation para referenciar um id composto
     private EnrollmentPK id = new EnrollmentPK();
 
     @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
@@ -26,7 +26,7 @@ public class Enrollment {
     public Enrollment(){
     }
 
-    public Enrollment(User user, Offer offer, Instant enrollMoment, Instant refundMoment, boolean available, boolean onlyUpdate) {
+    public Enrollment(User user, Offer offer, Instant enrollMoment, Instant refundMoment, boolean available, boolean onlyUpdate) {   //Contrutor adaptado para o id que se torno dois atributos
         id.setUser(user);
         id.setOffer(offer);
         this.enrollMoment = enrollMoment;
@@ -35,6 +35,7 @@ public class Enrollment {
         this.onlyUpdate = onlyUpdate;
     }
 
+    //Métodos get e set para id. Usando dois atributos para gerar eles.
     public User getStudent(){
         return id.getUser();
     }
