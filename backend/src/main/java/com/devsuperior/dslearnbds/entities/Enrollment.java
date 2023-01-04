@@ -4,9 +4,7 @@ import com.devsuperior.dslearnbds.entities.pk.EnrollmentPK;
 
 import javax.persistence.*;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "tb_enrollment")
@@ -27,7 +25,7 @@ public class Enrollment {
     private Set<Lesson> lessonsDone = new HashSet<>();
 
     @OneToMany(mappedBy = "enrollment")
-    private Set<Deliver> deliveries = new HashSet<>();
+    private List<Deliver> deliveries = new ArrayList<>();
 
     public Enrollment(){
     }
@@ -90,7 +88,7 @@ public class Enrollment {
         this.onlyUpdate = onlyUpdate;
     }
 
-    public Set<Deliver> getDeliveries() {
+    public List<Deliver> getDeliveries() {
         return deliveries;
     }
 
