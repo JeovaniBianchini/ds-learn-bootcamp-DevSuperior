@@ -17,6 +17,9 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
 
     @Autowired
+    private AuthService authService;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Override
@@ -31,6 +34,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional(readOnly = true)
     public UserDto findById(Long id){
+        authService.validateSelfOrAdmin(id);
         Optional<User> userOptional = userRepository.findById(id);
         User user = userOptional.orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return new UserDto(user);
