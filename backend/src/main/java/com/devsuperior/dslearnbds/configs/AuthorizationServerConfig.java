@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -50,6 +51,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private JwtTokenEnhancer tokenEnhancer;
 
+    @Autowired
+    private UserDetailsService userDetailsService;  //Injeção de dependencia para o refresh token
+
     //Métodos(AuthorizationServerConfigurerAdapter) de configuração para sobrescrever.
 
     @Override
@@ -63,8 +67,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .withClient(clientId)  //nome do cliente(aplicação)
                 .secret(passwordEncoder.encode(clientSecret))  //senha
                 .scopes("read", "write") //tipo leitura e escrita
-                .authorizedGrantTypes("password") //tipo de autorização
-                .accessTokenValiditySeconds(jwtDuration); //tempo de expiração do token
+                .authorizedGrantTypes("password", "refresh_token") //tipo de autorização
+                .accessTokenValiditySeconds(jwtDuration) //tempo de expiração do token
+                .refreshTokenValiditySeconds(jwtDuration); //tempo de expiração para refresh token
     }
 
     @Override
@@ -76,6 +81,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         endpoints.authenticationManager(authenticationManager)  //Vai processar a autenticação(gerenciador de autenticação)
                 .tokenStore(tokenStore)                         // Vai processar o token
                 .accessTokenConverter(accessTokenConverter)     // Vai processar o token
-                .tokenEnhancer(chain);
+                .tokenEnhancer(chain)
+                .userDetailsService(userDetailsService);  //  metodo para o refresh token
     }
 }
